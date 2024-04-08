@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const int MAX_PARTICIPANTS = 10;
+
 
 
 
@@ -64,6 +66,21 @@ void show_debts(S& debts, int size){
 
 }
 
+void show_balance(S& debts, int size){
+    for (int i=0; i<size; i++){
+
+        for (int j=0; j<size; j++){
+            if (i!=j){
+                cout << debts.names[i] << " " << debts.names[j] << endl;
+
+            }
+
+
+
+        }
+    }
+}
+
 
 
 
@@ -111,8 +128,14 @@ S add_expense(S& debts, int n, float amount, string name) {
 int main(){
 
     int n;
+
     cout << "Enter the number of participants: ";
     cin >> n;
+
+     if (n > MAX_PARTICIPANTS) {
+        cout << "Number of participants exceeds the maximum allowed limit." << endl;
+        return 1; 
+    }
 
     S debts; 
     initialize(debts, n); 
@@ -122,28 +145,45 @@ int main(){
     //ADD EXPENSE
     string name;
     float amount;
+    bool add = true;
+    char answer;
 
-    cout << "Who paid? " << endl;
-    cin >> name;
+    
+    while(add == true){
 
-    cout << "Amount: " << endl;
-    cin >> amount;
+        cout << "Do you want to add an expense? y/n ";
+        
+        cin >> answer;
+        
 
-    add_expense(debts, n, amount, name);
+        if (answer ==  'n' ){
+            add = false;
+            break;
+        }
+        
+        cout << "Who paid? " << endl;
+        cin >> name;
+        
+        cout << "Amount: " << endl;
+        cin >> amount;
+
+        add_expense(debts, n, amount, name);
+
+    }
+
+
+
 
     
 
 
 
-    show_debts(debts, n);
+    //show_debts(debts, n);
 
+    show_balance(debts, n);
 
 
     
-
-
-
-
 
 
 
