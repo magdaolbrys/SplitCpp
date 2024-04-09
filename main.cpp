@@ -22,7 +22,7 @@ struct S{
 
 
 
-void initialize(S& debts) {
+void groupInitialize(S& debts) {
 
     while (true) {
         cout << "Enter the number of participants (number from 2 to 5): ";
@@ -197,10 +197,10 @@ void newExpense(S& debts){
             cout << "Amount: " << endl;
 
             if (!(cin >> amount)) {
-            cout << "Invalid amount. Please enter a number." << endl;
-            cin.clear(); 
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
-        }
+                cout << "Invalid amount. Please enter a number." << endl;
+                cin.clear(); 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+            }
 
 
 
@@ -224,11 +224,10 @@ void newExpense(S& debts){
 
 int main(){
 
-    // group initialization
 
     S new_group; 
 
-    initialize(new_group); 
+    groupInitialize(new_group); 
 
     newExpense(new_group);
 
