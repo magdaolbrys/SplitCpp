@@ -2,37 +2,61 @@
 #include <iomanip>
 #include <cstdlib>
 #include <string.h>
-//#include <stdio.h>
+
 
 
 using namespace std;
 
+const int MIN_PARTICIPANTS = 2;
 const int MAX_PARTICIPANTS = 5;
-const int MIN_PARTICIPANTS = 5;
 
 
 
 
 struct S{
-        string* names;
-        float** costs;
+        int n; //number of participants
+        string* names; // names of participants
+        float** costs; // costs matrix
     };
 
 
 
 
-void initialize(S& debts, int n) {
-    debts.names = new string[n];
-    debts.costs = new float*[n];
+void initialize(S& debts) {
+
+    while (true) {
+        cout << "Enter the number of participants (number from 2 to 5): ";
+        
+        if (!(cin >> debts.n)) {
+            cout << "Invalid number of participants. Please enter a number." << endl;
+            cin.clear(); 
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        }
+        else if (debts.n > MAX_PARTICIPANTS) {
+            cout << "Number of participants exceeds the maximum allowed limit." << endl;
+        }
+        else if (debts.n < MIN_PARTICIPANTS) {
+            cout << "Number of participants must be at least 2." << endl;
+        }
+        else {
+            break; 
+        }
+    }
+
+
+
+    debts.names = new string[debts.n];
+    debts.costs = new float*[debts.n];
+
 
 
     cout << "Enter the names of participants " << endl;
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < debts.n; ++i) {
         cin >> debts.names[i];
-        debts.costs[i] = new float[n];
+        debts.costs[i] = new float[debts.n];
         
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < debts.n; j++) {
             debts.costs[i][j] = 0.00;
         }
     }
@@ -42,23 +66,26 @@ void initialize(S& debts, int n) {
 
 
 
-void showDebtsTable(S& debts, int size){
+
+
+
+void showDebtsTable(S& debts){
 
     cout <<  endl << "TABLE OF DEBTS (C=Creditor D=Debtor)" << endl;
 
     cout << setw(20) << left << "";
 
-    for (int i=0; i<size; i++){
+    for (int i=0; i<debts.n; i++){
         cout << setw(20) << left << "C " + debts.names[i];
     }
 
     cout << endl;
 
-    for (int i=0; i<size; i++){
+    for (int i=0; i<debts.n; i++){
 
         cout << setw(20) << left << "D " + debts.names[i];
 
-        for (int j=0; j<size; j++){
+        for (int j=0; j<debts.n; j++){
             cout << setw(20) << left << fixed << setprecision(2) << debts.costs[i][j];
         }
 
@@ -70,16 +97,16 @@ void showDebtsTable(S& debts, int size){
 
 
 
-void showBalance(S& debts, int size){
+void showBalance(S& debts){
 
     int counter = 0;
     bool is_debt = false;
 
     cout <<  endl << "BALANCE: " << endl;
 
-    for (int i=0; i<size; i++){
+    for (int i=0; i<debts.n; i++){
 
-        for (int j=i+1; j<size; j++){
+        for (int j=i+1; j<debts.n; j++){
 
             if (debts.costs[i][j] == debts.costs[j][i]){
                 continue;
@@ -107,11 +134,11 @@ void showBalance(S& debts, int size){
 
 
 
-S addExpense(S& debts, int n, float amount, string name) {
+S addExpense(S& debts, float amount, string name) {
 
     int name_index = -1;
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < debts.n; ++i) {
         
         if (name == debts.names[i]) {
             name_index = i;
@@ -122,7 +149,7 @@ S addExpense(S& debts, int n, float amount, string name) {
     if (name_index==-1){
         cout << "Participant not found. Names of participants: ";
         
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < debts.n; ++i) {
             cout << debts.names[i] << " ";
         }
 
@@ -132,9 +159,9 @@ S addExpense(S& debts, int n, float amount, string name) {
 
     // works only if splited equally
 
-    float cost = amount / n;
+    float cost = amount / debts.n;
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < debts.n; ++i) {
 
         if (i!=name_index){
             debts.costs[i][name_index] += cost;
@@ -148,7 +175,7 @@ S addExpense(S& debts, int n, float amount, string name) {
 
 
 
-void newExpense(S& debts, int n){
+void newExpense(S& debts){
 
     string name;
     float amount;
@@ -168,9 +195,17 @@ void newExpense(S& debts, int n){
             cin >> name;
         
             cout << "Amount: " << endl;
-            cin >> amount;
 
-            addExpense(debts, n, amount, name);
+            if (!(cin >> amount)) {
+            cout << "Invalid amount. Please enter a number." << endl;
+            cin.clear(); 
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        }
+
+
+
+
+            addExpense(debts, amount, name);
 
         }
         else{
@@ -191,40 +226,24 @@ int main(){
 
     // group initialization
 
-    int n;
+    S new_group; 
 
-    cout << "Enter the number of participants (number from 2 to 5): ";
-    cin >> n;
+    initialize(new_group); 
 
-    if (n > MAX_PARTICIPANTS) {
-        cout << "Number of participants exceeds the maximum allowed limit." << endl;
-        return 1; 
-    }
-    else if (n < MIN_PARTICIPANTS){
-        cout << "Number of participants must be at least 2." << endl;
-        return 1;
-    }
+    newExpense(new_group);
 
-    S debts; 
+    showDebtsTable(new_group);
 
-
-
-    initialize(debts, n); 
-
-    newExpense(debts, n);
-
-    showDebtsTable(debts, n);
-
-    showBalance(debts, n);
+    showBalance(new_group);
 
 
 
     // free memory
-    for (int i = 0; i < n; ++i) {
-        delete[] debts.costs[i];
+    for (int i = 0; i < new_group.n; ++i) {
+        delete[] new_group.costs[i];
     }
-    delete[] debts.costs;
-    delete[] debts.names;
+    delete[] new_group.costs;
+    delete[] new_group.names;
 
     return 0;
 
