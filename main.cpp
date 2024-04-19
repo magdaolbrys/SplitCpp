@@ -45,7 +45,7 @@ void groupInitialize(S& debts) {
 
     cout << "Enter the names of participants " << endl;
 
-    for (int i = 0; i < debts.n; ++i) {
+    for (int i = 0; i < debts.n; i++) {
         cin >> debts.names[i];
         debts.costs[i] = new float[debts.n];
 
@@ -151,7 +151,7 @@ S addExpense(S& debts){
             if (name_index==-1){
                 cout << "EXPENSE NOT ADDED. Participant not found. Names of participants: ";
         
-                for (int i = 0; i < debts.n; ++i) {
+                for (int i = 0; i < debts.n; i++) {
                     cout << debts.names[i] << " ";
                 }
 
@@ -167,7 +167,7 @@ S addExpense(S& debts){
 
                 float cost = amount / debts.n;
 
-                for (int i = 0; i < debts.n; ++i) {
+                for (int i = 0; i < debts.n; i++) {
 
                     if (i!=name_index){
                         debts.costs[i][name_index] += cost;
@@ -195,15 +195,12 @@ int main(){
 
     addExpense(new_group);
 
-    //showDebtsTable(new_group);
+    showDebtsTable(new_group);
 
     showBalance(new_group);
 
 
-    // free memory
-    for (int i = 0; i < new_group.n; ++i) {
-        delete[] new_group.costs[i];
-    }
+    // memory
     delete[] new_group.costs;
     delete[] new_group.names;
 
